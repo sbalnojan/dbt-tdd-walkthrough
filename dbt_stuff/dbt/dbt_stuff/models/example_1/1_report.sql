@@ -1,7 +1,3 @@
-/*
-    Welcome to
-*/
-
 {{ config(materialized='table') }}
 
 with order_stats as (
@@ -14,10 +10,9 @@ with order_stats as (
         on
             {{ ref('source_orders') }}.cid = {{ ref('source_customers') }}.id
     group by customer_id, source
-) -- have already dome some optimization, not one mega join, but a subquery...
+)
 
 select * from order_stats
 left join
     {{ ref('source_mkt') }} on
         order_stats.customer_id = {{ ref('source_mkt') }}.cid
--- time: 9 s

@@ -34,6 +34,17 @@ tasks:
       container: dbt
       command: deps
 
+  run_tests:
+    description: Install dbt deps
+    group: Utility tasks
+    dependencies:
+    - postgres
+    run:
+      container: dbt
+      entrypoint:  sh -c 'while true; do dbt test; sleep 30; done'
+        #h -c 'pip install when-changed; when-changed . "dbt test"'
+
+
   db:
     description: Fire up the db once 
     group: Utility tasks
