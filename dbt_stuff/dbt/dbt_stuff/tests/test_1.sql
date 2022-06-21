@@ -4,7 +4,7 @@
     )
 }}
 
-{% call dbt_unit_testing.test ('1_report','has new column') %}
+{% call dbt_unit_testing.test ('1_report','has new column', {"mocking_strategy": "Pure"} ) %}
 
   {% call dbt_unit_testing.mock_ref ('source_customers') %}
     select 1 as customer_id
