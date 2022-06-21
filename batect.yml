@@ -27,6 +27,13 @@ containers:
        
   ## Utility tasks
 tasks:
+  deps:
+    description: Install dbt deps
+    group: Utility tasks
+    run:
+      container: dbt
+      command: deps
+
   db:
     description: Fire up the db once 
     group: Utility tasks
