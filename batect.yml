@@ -1,0 +1,53 @@
+containers:
+  postgres:
+    image: postgres:13.4-bullseye
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: demo
+    volumes:
+      - local: ./postgres/data
+        container: /var/lib/postgresql/data
+        options: cached
+    ports:
+      - local: 5432
+        container: 5432
+  dbt:
+    image: fishtownanalytics/dbt:1.0.0
+    volumes:
+      - local: .dbt/
+        container: /root/.dbt/
+        options: cached
+      - local: dbt_stuff/
+        container: /root/app
+    working_directory: /root/app/dbt/dbt_stuff/
+    ports:
+      - local: 8080
+        container: 8080
+       
+  ## Utility tasks
+tasks:
+  db:
+    description: Fire up the db once 
+    group: Utility tasks
+    run:
+      container: postgres
+
+  dbt:
+    description: Start dbt shell
+    group: Utility tasks
+    dependencies:
+    - postgres
+    run:
+      container: dbt
+      entrypoint: sh
+
+  docs:
+    description: generate docs, start doc server
+    group: Utility tasks
+    dependencies:
+    - postgres
+    - spark-iceberg
+    run:
+      container: dbt
+      entrypoint: sh -c 'dbt docs generate; dbt docs serve'
